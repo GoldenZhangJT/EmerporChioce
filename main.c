@@ -23,8 +23,9 @@ int main()
     int i;                               //循环变量
     int count =5;                        //当前未打入冷宫的妃子个数
     int times ;                          //用于存放妃子好感度小于60个数量
-    int days=10;                         //皇帝最长执政天数
-    char tempNames[50] ;                 //用于存放皇帝宠幸妃子的名称
+    //int days=10;                         //皇帝最长执政天数
+    char tempName[50] ;                 //用于存放皇帝宠幸妃子的名称
+
     /*
         我们需要使用数组来表示嫔妃以及嫔妃的各项状态（属性）
         1，嫔妃的姓名
@@ -42,12 +43,12 @@ int main()
     int loves[]={100,100,100,100,100,-1};
     printf("请输入皇帝名号：");
     scanf("%s",emperorName);
-    /*
+    printf("****************************************************\n");
     printf("1,皇帝下旨选妃：\t(增加功能)\n");
     printf("2,翻盘宠幸：\t\t(修改状态功能)\n");
     printf("3,打入冷宫：\t\t(删除功能)\n");
     printf("4,单独召见爱妃去小树林做纯洁的事：\n");
-    */
+    printf("****************************************************\n");
     printf("皇帝的选择：");
     scanf("%d",&choice);
     //皇帝只有1-4的选择，故用Switch-case结构
@@ -83,8 +84,9 @@ int main()
         case 2: //皇帝翻盘宠幸：(修改状态功能)
             /*
                 1,选定妃子的名号
-                2,妃子名号确定，其好感度加10，其级别加1
-                3,其他妃子的好感度减10和级别减1
+                2,妃子名号确定，其好感度加10，其级别加1，级别区间 0-4
+                3,其他妃子的好感度减10。
+                4,当输入的妃子名称不在names[]数组中，需要提示用户重新输入
             */
             //重新妃子之前状态
             printf("%-12s级别\t好感度\n","姓名");
@@ -92,46 +94,31 @@ int main()
             {
                 printf("%-12s%s\t%d\n",names[i],levelNames[levels[i]],loves[i]);
             }
-            do
+            printf("请皇帝输入要宠幸的妃子：");
+            scanf("%s",tempName);
+            for( i=0 ;i < count ; i++)
             {
-                printf("请皇帝输入要宠幸的妃子：");
-                scanf("%s",tempNames);
-                    for( i=0 ;i < count ; i++)
+                if(strcmp(tempName,names[i])==0) //宠幸妃子的名称是否在数组names[i]中
+                {
+                //该妃子的级别加1且取值范围 0-4,利用三位运算符： 判断 ？结果 ：运算
+                    levels[i] = levels[i] >=4 ? 4 : levels[i] +1 ;
+                    loves[i] +=10;
+                }
+                else
+                {
+                    loves[i]-=10;
+                    //printf("请皇帝认真选择，切勿贪恋之外的女子！\n");
+                }
+                printf("%-12s%s\t%d\n",names[i],levelNames[levels[i]],loves[i]);
+                if(loves[i] <=60)
+                {
+                    times++;
+                    if(times >=3)
                     {
-                        if(strcmp(tempNames,names[i])==0) //宠幸妃子的名称是否在数组names[i]中
-                        {
-                        //该妃子的级别加1且取值范围 0-4
-                            if(levels[i]>=0 && levels[i] <=4)
-                            {
-                                levels[i] +=1;
-                            }
-                            if(loves[i] >=0 && loves[i]<=140) //该妃子的好感度小于0或大于140时，
-                            {
-                                loves[i] +=10;
-                            }
-                            else
-                            {
-                                printf("妃子好感度已无法预知！");
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            loves[i]-=10;
-                            //printf("请皇帝认真选择，切勿贪恋之外的女子！\n");
-                        }
-                        if(loves[i] <=60)
-                        {
-                            times++;
-                            if(times >=3)
-                            {
-                                printf("皇帝管理五方，后宫造反，帝国覆灭！");
-                                break;
-                            }
-                        }
+                        printf("皇帝管理五方，后宫造反，帝国覆灭！\n");
                     }
-                days--;
-            }while(days <=0); //判断妃子好感度是否低于60，当其数量超过3时，皇帝被妃子干死了，帝国覆灭！
+                }
+            }
         break;
         case 3:
             printf("3,打入冷宫：\t\t(删除功能)\n");
